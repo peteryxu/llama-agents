@@ -55,6 +55,9 @@ console.log(date.toString())
 
 ### 07/05
 
+- created First PR
+- Debug the BUG: RouterComponent (potentially another PR)
+
 
 ### 07/04:  
 
