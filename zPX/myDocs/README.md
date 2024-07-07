@@ -7,8 +7,13 @@
 - [Table of Content](#table-of-content)
   - [Check llamaAgents Version](#check-llamaagents-version)
   - [Daily](#daily)
+    - [07/06](#0706)
+      - [Deploy kube console inside Docker Desktop](#deploy-kube-console-inside-docker-desktop)
+      - [Test Agents RabbitMQ sample](#test-agents-rabbitmq-sample)
     - [07/05](#0705)
-    - [07/04:](#0704)
+      - [Test CRAG (Corrective RAG)](#test-crag-corrective-rag)
+      - [PRs](#prs)
+    - [07/04](#0704)
       - [installed starship Prompt configurator](#installed-starship-prompt-configurator)
       - [CHAT Participant in Github CoPilot Chat](#chat-participant-in-github-copilot-chat)
       - [corrective_rag.ipynb](#corrective_ragipynb)
@@ -17,6 +22,7 @@
       - [PlantUML](#plantuml)
     - [07/03: Test docker-kube example](#0703-test-docker-kube-example)
   - [Utils](#utils)
+    - [kubectl](#kubectl)
     - [GIT](#git)
       - [common](#common)
       - [rebase](#rebase)
@@ -25,11 +31,10 @@
 
 <!-- /code_chunk_output -->
 
-
 ## Check llamaAgents Version
 
-1. open a new terminal
-2. check versions
+- open a new terminal
+- check versions
 
 ```bash
 cd /Users/pxu/CODE/GenAI4Code/llama-agents
@@ -38,13 +43,13 @@ which pip
 pip list | grep llama-agents
 ```
 
-3. install/update as needed (check pyproject.toml)
+- install/update as needed (check pyproject.toml)
 
 ```bash
 poetry install
 ```
 
-4. check nodejs execution
+- check nodejs execution
 
 ```javascript {cmd="node"}
 const date = Date.now()
@@ -53,24 +58,55 @@ console.log(date.toString())
 
 ## Daily
 
+### 07/06
+
+#### Deploy kube console inside Docker Desktop
+
+- [deploy console](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
+- [creat user/role](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)
+- kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+- https://localhost:8443 
+- kubectl port-forward -n llama-agents-demo rabbitmq-server-2 8080:15672
+- http://127.0.0.1:8080/#/
+
+#### Test Agents RabbitMQ sample
+
+- [Core Concept](https://medium.com/cwan-engineering/rabbitmq-concepts-and-best-practices-aa3c699d6f08)
+- [Console](http://localhost:15672/#/) guest/guest
+- kubectl -n llama-agents-demo get all
+
+```bash
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.13-management
+python ./simple-scripts/local_launcher_example.py
+```
+
+![arch1](img/rabbitmq1.webp)
+![arch2](img/rabbitmq2.webp)
+![console](img/console.png)
+
 ### 07/05
+
+#### Test CRAG (Corrective RAG)
+
+#### PRs
 
 - created First PR
 - Debug the BUG: RouterComponent (potentially another PR)
+- [Dave Ebbelaar](https://www.youtube.com/watch?v=qFvInA7DKuE):  shift-enter: python interactive
 
-
-### 07/04:  
+### 07/04  
 
 #### installed starship Prompt configurator
+
 - [install starship](https://starship.rs/guide/)
 - [install nerd font](https://docs.rockylinux.org/books/nvchad/nerd_fonts/)
-  - directory installed:  	/Users/pxu/Library/Fonts/NerdFonts
-  - https://support.apple.com/guide/font-book/install-and-validate-fonts-fntbk1000/mac
+  - directory installed:   /Users/pxu/Library/Fonts/NerdFonts
+  - <https://support.apple.com/guide/font-book/install-and-validate-fonts-fntbk1000/mac>
 
 - [configure terminal to use](https://webinstall.dev/nerdfont/)
 
-
 #### CHAT Participant in Github CoPilot Chat
+
 - [@cat sample source code](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample)
 - [VSCode June New](https://code.visualstudio.com/updates/v1_91#_chat-and-language-model-api)
 - [BLOG](https://code.visualstudio.com/blogs/2024/06/24/extensions-are-all-you-need)
@@ -97,7 +133,7 @@ sequenceDiagram
         API-->Consumer: show failure
     end
     API-->BillingService: Start billing process
-```    
+```
 
 /// with background
 
@@ -117,8 +153,7 @@ sequenceDiagram
     end
     Alice ->>+ John: Did you want to go to the game tonight?
     John -->>- Alice: Yeah! See you there.
- ```   
-
+ ```
 
 #### PlantUML
 
@@ -142,7 +177,6 @@ Foo -> Foo7: To queue
 @enduml
 
 ```
-
 
 ### 07/03: Test docker-kube example
 
@@ -199,10 +233,14 @@ llama-agents monitor --control-plane-url http://control-plane.127.0.0.1.nip.io
 python TESTclient_k8s.py
 ```
 
-
 ## Utils
 
-### GIT 
+### kubectl
+
+kubectl get pods -n kube-system
+
+
+### GIT
 
 ![gitcmd](img/gitcmd.png)
 
@@ -215,23 +253,25 @@ python TESTclient_k8s.py
 5. git help
 
 #### rebase
+
 hint: You have divergent branches and need to specify how to reconcile them.
 hint: You can do so by running one of the following commands sometime before
 hint: your next pull:
-hint: 
+hint:
 hint:   git config pull.rebase false  # merge
 hint:   git config pull.rebase true   # rebase
 hint:   git config pull.ff only       # fast-forward only
-hint: 
+hint:
 hint: You can replace "git config" with "git config --global" to set a default
 hint: preference for all repositories. You can also pass --rebase, --no-rebase,
 hint: or --ff-only on the command line to override the configured default per
 hint: invocation.
 
 ### load_dotenv
+
 pip install python-dotenv
 
-//////Example from https://pypi.org/project/python-dotenv/
+//////Example from <https://pypi.org/project/python-dotenv/>
 from dotenv import load_dotenv
 load_dotenv()
 print(os.environ.get('FOO')) # Returns 'BAR'
@@ -244,9 +284,7 @@ print(os.environ.get('FOO')) # Returns 'BAR'
 2. DRAG and DROP images, position cursor in the md file, drag the images in explorer, press shift to DROP
 3. CMD+SHIFT+P: you can use the Markdown: Insert Image from Workspace command to insert images and Markdown: Insert Link to File in Workspace to insert file links.
 
-/// MD snippets 
+/// MD snippets
 
-1. VS Code includes some useful snippets that can speed up writing Markdown. This includes snippets for code blocks, images, and more. Press ⌃Space (Trigger Suggest) while editing to see a list of suggested Markdown snippets. 
+1. VS Code includes some useful snippets that can speed up writing Markdown. This includes snippets for code blocks, images, and more. Press ⌃Space (Trigger Suggest) while editing to see a list of suggested Markdown snippets.
 2. You can also use the dedicated snippet picker by selecting Insert Snippet in the Command Palette.
-
-
